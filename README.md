@@ -71,6 +71,7 @@ const log = require('sweet-potato').log;
 log(1); //prints 1
 log(someObject); //prints JSON pretty printed
 log(someArrayOfArrays); //prints using console.table.
+```
 
 **permutator**
 
