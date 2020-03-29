@@ -1,21 +1,23 @@
-#Welcome to your very own Sweet Potato 🍠
+Welcome to your very own Sweet Potato 🍠
+========================================
 
 This is a little collection of node-js libs that are useful for command line tools. I plan to clean these up, add some
 tests and spin these off into their own little repos.
 
-##The libraries
+The libraries
+-------------
 
-###allMyChildren
+**allMyChildren**
 
 Iterates over all objects within a JavaScript object tree.
 
-````
+```
 const allMyChildren = require('sweet-potato').allMyChildren;
 
 allMyChildren(node, setLeafFromResult, runFunction, key, parent);
 ```
 
-###args
+**args**
 
 Pulls out arguments sent into a script on the command line and makes them available in an easier way than using
 `process.args`.
@@ -35,7 +37,7 @@ console.log(args.veggie); //'carrot'
 console.log(args.count); //'3'
 ````
 
-###awaitNewFiles
+**awaitNewFiles**
 
 Watch a particular directory until a new file arrives. Useful for watching for downloads.
 
@@ -47,19 +49,19 @@ awaitNewFiles('/Users/mrpotato/Downloads', function(newFilesArray) {
 });
 ```
 
-###customStringify
+**customStringify**
 
 Alternative to `JSON.stringify()` when you have an object with circular structures.
 
 `const customStringify = require('sweet-potato').customStringify;`
 
-###dateStuff
+**dateStuff**
 
 Some useful date functions lazily gathered into one library.
 
 `const dateStuff = require('sweet-potato').dateStuff;`
 
-###log
+**log**
 
 Alternative to `console.log` that is both shorter to type, and provides more useful output for objects, arrays, etc.
 
@@ -70,7 +72,7 @@ log(1); //prints 1
 log(someObject); //prints JSON pretty printed
 log(someArrayOfArrays); //prints using console.table.
 
-###permutator
+**permutator**
 
 Provides all permutations of an array.
 
@@ -83,7 +85,7 @@ var p = permutator(arr);
 //p should equal [ [ 1, 2, 3 ], [ 1, 3, 2 ], [ 2, 1, 3 ], [ 2, 3, 1 ], [ 3, 1, 2 ], [ 3, 2, 1 ] ]
 ```
 
-###readCsv
+**readCsv**
 
 A simple wrapper around `fast-csv`;
 
@@ -95,7 +97,7 @@ readCsv('/Users/mrpotato/Documents/harvest.csv', { leaveCaseAlone: true }, funct
 });
 ```
 
-###runCommand
+**runCommand**
 
 A simple wrapper around `child_process` to run commands. This needs some rethinking to be generally usable.
 
@@ -105,7 +107,7 @@ const runCommand = require('sweet-potato').runCommand;
 runCommand('open /Users/mrpotato/Documents/harvest.csv');
 ```
 
-###SeededRandom
+**SeededRandom**
 
 A way to get pseudo-random numbers that are repeatable. At least on the same machine.
 
@@ -122,7 +124,7 @@ rand.shuffle([1,2,3,4,5,6]); //returns [ 1, 4, 3, 5, 2, 6 ]
 //rerunning this code should produce the same results.
 ```
 
-###writeCsv
+**writeCsv**
 
 Simple wrapper around `csv-writer`.
 
@@ -132,13 +134,14 @@ const writeCsv = require('sweet-potato').writeCsv;
 writeCsv('/Users/mrpotato/Documents/gardenPlan.csv', arrayOfObjectsSameKeys);
 ```
 
-##FAQs
+FAQs
+----
 
-###Why is it called Sweet Potato?
+**Why is it called Sweet Potato?**
 I really like sweet potatoes, and literally all the other names are taken.
 
-###There's already a better library for function X
+**There's already a better library for function X**
 Cool, sometimes these things are hard to find!
 
-###Some of this code is not good, so like, why?
+**Some of this code is not good, so like, why?**
 Been busy.
