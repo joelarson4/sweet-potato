@@ -8,14 +8,18 @@ var args = { };
 var altNames = {};
 
 var waitOnErrors = null;
+var hasDefaults = false;
 var errors = [];
 var exampleCommands = {
-    long: ['node ' + process.argv[1].split('/').pop()],
-    short: ['node ' + process.argv[1].split('/').pop()],
+    longDashed: ['node ' + process.argv[1].split('/').pop()],
+    shortDashed: ['node ' + process.argv[1].split('/').pop()],
+    longEquals: ['node ' + process.argv[1].split('/').pop()],
+    shortEquals: ['node ' + process.argv[1].split('/').pop()],
     all:  ['node ' + process.argv[1].split('/').pop()],
 };
 
-process.argv.forEach(function(arg) {
+for(var ai = 0; ai < process.argv.length; ai++) {
+    var arg = process.argv[ai];
     var key = arg.split('=')[0];
     if(key.charAt(0) == '-') {
         key = key.substring(1);
@@ -32,9 +36,15 @@ process.argv.forEach(function(arg) {
         if(val.charAt(0) == "'") {
             val = val.split("'").join('');
         }
+    } else if(ai < process.argv.length - 1) {
+        var nextArg = process.argv[ai + 1];
+        if(nextArg.charAt(0) !== '-' && nextArg.indexOf('=') < 0) {
+            val = nextArg;
+            ai++;
+        }
     }
     args[key] = val;
-});
+}
 
 args.extend = function(object) {
     _.forOwn(object, function(v, k) {
@@ -63,31 +73,34 @@ args.declare = function(argName, argType, argDefault, argExplain) {
 
     if(typeof this[argName] == 'undefined') {
         if(typeof argDefault == 'undefined' || argDefault === null) {
-            var err = 'Arg "' + argName + ( altNames[argName] ? '" / "' + altNames[argName].slice(1).join('" / "') : '') + '" is required' + (argExplain ? '. ' + argExplain : '') + (argType ? ', type ' + argType : '');
+            var err = 'arg "' + argName + ( altNames[argName] ? '" / "' + altNames[argName].slice(1).join('" / "') : '') + '" is required' + (argExplain ? '. ' + argExplain : '') + (argType ? ', type ' + argType : '');
             if(waitOnErrors) {
                 errors.push(err);
                 
-                exampleCommands.long.push(argName + '=?');
-                exampleCommands.short.push((altNames[argName] ? altNames[argName][1] : argName) + '=?');
-                exampleCommands.all.push(argName + '=?');
+                exampleCommands.longEquals.push(argName + '=?');
+                exampleCommands.shortEquals.push((altNames[argName] ? altNames[argName][1] : argName) + '=?');
+                exampleCommands.longDashed.push('--' + argName + ' ?');
+                exampleCommands.shortDashed.push('-' + (altNames[argName] ? altNames[argName][1] : argName) + ' ?');
+                exampleCommands.all.push('--' + argName + ' ?');
             } else {
                 throw new Error(err);
             }
         } else {
             this[argName] = argDefault;
-            console.log('Defaulting arg "' + argName + '" to ' + argDefault + (argExplain ? '. ' + argExplain : ''));
-            exampleCommands.all.push(argName + '=?');
+            console.log('defaulting arg "' + argName + '" to ' + argDefault + (argExplain ? '. ' + argExplain : ''));
+            exampleCommands.all.push('--' + argName + ' ?');
+            hasDefaults = true;
         }
     } else {
         if(typeof argType == 'string') {
             if(argType == 'number') {
                 this[argName] = Number(this[argName]);
                 if(isNaN(this[argName])) {
-                    throw new Error('Arg "' + argName + '" must be of type ' + argType); 
+                    throw new Error('arg "' + argName + '" must be of type ' + argType); 
                 }
             } else if(argType == 'boolean') {
                 if(this[argName] !== 'false' && this[argName] !== 'true' && this[argName] !== '0' && this[argName] !== '1') {
-                    var err = 'Arg "' + argName + '" must be of type ' + argType;
+                    var err = 'arg "' + argName + '" must be of type ' + argType;
                     if(waitOnErrors) {
                         errors.push(err);
                     } else {
@@ -110,9 +123,11 @@ args.throwIfErrors = function() {
     if(waitOnErrors && errors.length) {
         if(args.help) {
             log('');
-            log(exampleCommands.long.join(' '));
-            log(exampleCommands.short.join(' '));
-            log(exampleCommands.all.join(' '));
+            log(exampleCommands.longDashed.join(' '));
+            log(exampleCommands.longEquals.join(' '));
+            log(exampleCommands.shortDashed.join(' '));
+            log(exampleCommands.shortEquals.join(' '));
+            if(hasDefaults) { log(exampleCommands.all.join(' ')); }
             log('');
         }
 
