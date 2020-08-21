@@ -5,7 +5,15 @@ const path = require('path');
 const currentScript = path.basename(__filename);
 
 var args = { };
-var altNames = {};
+var altNames = { };
+
+if(!process.argv) {
+    //Not called via command line.
+
+    args.ignore = true;
+    
+    return;
+}
 
 var waitOnErrors = null;
 var hasDefaults = false;
